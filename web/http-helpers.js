@@ -11,9 +11,18 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset) {
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+  fs.readFile(__dirname + "/public/index.html", "utf-8", function(err, data){
+    if(err){
+      throw err
+    }
+    res.write(data);
+    res.end();
+  });
 };
 
+exports.sendResponse = sendResponse = function(status, res, data){
+  res.writeHead(status, headers);
+  res.end(data);
+};
 // As you progress, keep thinking about what helper functions you can put here!
 
