@@ -39,18 +39,18 @@ exports.postReq = postReq = function(res, req){
 
   req.on('end', function(){
     archive.isUrlInList(reqUrl.substring(4), function(array,searchUrl){ 
-    console.log(array.indexOf(searchUrl))
-    if(array.indexOf(searchUrl)>-1){
-      serveAssets(res, {url:reqUrl.substring(4)});
-    }else{
-      fs.readFile( path.join(__dirname, "public", "loading.html"), "utf-8", function(err, data){
-        sendResponse(err, data, 302, res);
-      } );
-    }
-    } 
-    )
+    console.log(array.indexOf(searchUrl));
+      if(array.indexOf(searchUrl)>-1){
+        serveAssets(res, {url:reqUrl.substring(4)});
+      }else{
+        archive.addUrlToList( reqUrl.substring(4) );
+        archive.downloadUrls( reqUrl.substring(4) );
+        fs.readFile( path.join(__dirname, "public", "loading.html"), "utf-8", function(err, data){
+          sendResponse(err, data, 302, res);
+        } );
+      }
+    });
   });
-  
 };
 
 exports.sendResponse = sendResponse = function(err, data, status, res){
