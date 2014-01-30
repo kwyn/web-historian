@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
+var url = require('url');
 
 exports.headers = headers = {
   "access-control-allow-origin": "*",
@@ -11,16 +12,43 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset) {
-  fs.readFile(__dirname + "/public/index.html", "utf-8", function(err, data){
-    if(err){
-      throw err
-    }
-    res.write(data);
-    res.end();
-  });
+  if(asset.url === "/"){
+    fs.readFile( path.join(__dirname, "public", "index.html"), "utf-8", function(err, data){
+      sendResponse(err, data, 200, res);
+    } );
+  }else if(asset.url === '/styles.css' || asset.url === '/favicon.ico'){
+    fs.readFile(__dirname + "/public" + asset.url, "utf-8", function(err, data){
+      sendResponse(err, data, 200, res);
+    });
+  }else{
+    fs.readFile( path.join(__dirname, "../archives", "sites", asset.url), "utf-8", function(err, data){
+      sendResponse(err, data, 200, res);
+    });
+  }
 };
 
-exports.sendResponse = sendResponse = function(status, res, data){
+
+exports.postReq = postReq = function(res, req){
+  
+  var reqUrl = '';
+
+  req.on('data', function(chunk) {
+    reqUrl += chunk;
+  });
+
+  req.on('end', function(){
+    //reqUrl complete. Do something with this URL
+    //probably 
+    console.log(reqUrl);
+  });
+  
+  res.end();
+};
+
+exports.sendResponse = sendResponse = function(err, data, status, res){
+  if(err){
+    throw err
+  }
   res.writeHead(status, headers);
   res.end(data);
 };

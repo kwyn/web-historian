@@ -5,11 +5,11 @@ var helpers = require('./http-helpers.js');
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
-  console.log(req.url)
-  methods[req.method](res, req.url);
-  // res.end(archive.paths.list);
+    methods[req.method](res, req);
 };
 
 var methods = {
   GET: helpers.serveAssets,
+  POST: helpers.postReq,
+  OPTIONS: helpers.option
 };
