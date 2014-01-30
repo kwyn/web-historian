@@ -37,19 +37,14 @@ exports.readListOfUrls = readListOfUrls = function(path, cb){
   })
 };
 
-exports.isUrlInList = function(searchUrl){
+exports.isUrlInList = function(searchUrl, cb){
   //takes in a url
   //return bool if url is in readLists
-  return readListOfUrls( paths.list, function(urls){
-    _.some(urls, function(url){
-    if(url === searchUrl){
-      return true;
-    }else{
-      return false;
-    }
-  }, false);
-  }
-);
+  var result;
+  readListOfUrls( paths.list, function(urls){
+    result = urls;
+    cb(result, searchUrl)
+  });
 
 };
 

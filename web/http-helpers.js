@@ -12,7 +12,7 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset) {
+exports.serveAssets = serveAssets = function(res, asset) {
   if(asset.url === "/"){
     fs.readFile( path.join(__dirname, "public", "index.html"), "utf-8", function(err, data){
       sendResponse(err, data, 200, res);
@@ -38,25 +38,19 @@ exports.postReq = postReq = function(res, req){
   });
 
   req.on('end', function(){
-    
-    if( archive.isUrlInList(reqUrl) ){
-      console.log('inhurr');
+    archive.isUrlInList(reqUrl.substring(4), function(array,searchUrl){ 
+    console.log(array.indexOf(searchUrl))
+    if(array.indexOf(searchUrl)>-1){
+      serveAssets(res, {url:reqUrl.substring(4)});
     }else{
       fs.readFile( path.join(__dirname, "public", "loading.html"), "utf-8", function(err, data){
-        sendResponse(err, data, 302,res);
+        sendResponse(err, data, 302, res);
       } );
     }
-  //   console.log(reqUrl.substring(4))
-    
-  //   fs.appendFile( path.join(__dirname,"../archives", "sites.txt"), reqUrl.substring(4)+ "\n", function(err){
-  //     if(err){
-  //       console.log(err);
-  //     }
-  //   } );
-  //   console.log(reqUrl);
-  // });
-  
+    } 
+    )
   });
+  
 };
 
 exports.sendResponse = sendResponse = function(err, data, status, res){
