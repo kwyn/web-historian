@@ -66,7 +66,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should 404 when asked for a nonexistent file", function() {
+  it("Should 404 when asked for a nonexistent file", function() {
     var req = new stubs.Request("/arglebargle", "GET");
     var oldPath = archive.paths.list;
     archive.initialize({ list : path.join(__dirname, "/testdata/sites.txt") });

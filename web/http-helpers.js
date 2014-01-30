@@ -38,19 +38,27 @@ exports.postReq = postReq = function(res, req){
 
   req.on('end', function(){
     //reqUrl complete. Do something with this URL
-    //probably 
+    console.log(reqUrl.substring(4))
+    fs.appendFile( path.join(__dirname,"../archives", "sites.txt"), reqUrl.substring(4)+ "\n", function(err){
+      if(err){
+        console.log(err);
+      }
+    } );
     console.log(reqUrl);
   });
-  
-  res.end();
+  res.writeHead(302, headers);
+  res.end('loading.html');
 };
 
 exports.sendResponse = sendResponse = function(err, data, status, res){
   if(err){
-    throw err
+    res.writeHead(404, headers);
+    res.end('Nothing here...');
+    console.log(err);
+  }else{
+    res.writeHead(status, headers);
+    res.end(data);
   }
-  res.writeHead(status, headers);
-  res.end(data);
 };
 // As you progress, keep thinking about what helper functions you can put here!
 
