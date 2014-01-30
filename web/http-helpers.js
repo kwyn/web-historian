@@ -3,6 +3,7 @@ var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
 var url = require('url');
 
+
 exports.headers = headers = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -37,17 +38,25 @@ exports.postReq = postReq = function(res, req){
   });
 
   req.on('end', function(){
-    //reqUrl complete. Do something with this URL
-    console.log(reqUrl.substring(4))
-    fs.appendFile( path.join(__dirname,"../archives", "sites.txt"), reqUrl.substring(4)+ "\n", function(err){
-      if(err){
-        console.log(err);
-      }
-    } );
-    console.log(reqUrl);
+    
+    if( archive.isUrlInList(reqUrl) ){
+      console.log('inhurr');
+    }else{
+      fs.readFile( path.join(__dirname, "public", "loading.html"), "utf-8", function(err, data){
+        sendResponse(err, data, 302,res);
+      } );
+    }
+  //   console.log(reqUrl.substring(4))
+    
+  //   fs.appendFile( path.join(__dirname,"../archives", "sites.txt"), reqUrl.substring(4)+ "\n", function(err){
+  //     if(err){
+  //       console.log(err);
+  //     }
+  //   } );
+  //   console.log(reqUrl);
+  // });
+  
   });
-  res.writeHead(302, headers);
-  res.end('loading.html');
 };
 
 exports.sendResponse = sendResponse = function(err, data, status, res){
