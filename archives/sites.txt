@@ -1,2 +1,5 @@
 www.cnn.com
 www.google.com
+www.facebook.com
+www.amazon.com
+www.facebook.com.com

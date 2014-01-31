@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('../bower_components/underscore/underscore.js');
 var http = require('http-get');
-var htmlfetcher = require('../workers/htmlfetcher.js');
+var _ = require('underscore');
 
 /* You will need to reuse the same paths many times over in the course of this sprint.
   Consider calling this function in `request-handler.js` and passing in the necessary
@@ -34,14 +34,13 @@ exports.readListOfUrls = readListOfUrls = function(path, cb){
     if(err){
       return err;
     }
-    var siteArray = data.split('\n'); 
+    var siteArray = data.split('\n');
     cb(siteArray);
   });
 };
 
 exports.isUrlInList = function(searchUrl, cb){
-  //takes in a url
-  //return bool if url is in readLists
+
   var result;
   readListOfUrls( paths.list, function(urls){
     result = urls;
@@ -60,35 +59,26 @@ exports.addUrlToList = function(url){
   });
 };
 
-exports.isURLArchived = function(){
+//reutrns a bool is a URL is archive 
+exports.isUrlArchived = function(url, cb){
+  fs.readdir(paths.archivedSites, function(err, files){
+    if(err){ console.log("isUrlArchived error")};
+    cb(files, url);
+  });
 };
 
 exports.downloadUrls = function(url){
+
   httpurl = "http://" + url;
   newFilePath = path.join(paths.archivedSites, url);
   fs.writeFile(newFilePath, '', function(err){
-    if(err) {console.log("writeFile :" )}
-    htmlfetcher.getWebsite(httpurl, newFilePath);
+    if(err) {console.log("downloadUrls error")}
+    getWebsite(httpurl, newFilePath);
   });
-//   http.get(httpurl, newFilePath, function(err){
-//     if(err) {console.log("erro fetching site" + err);}
-//   });
-// //   console.log("http.get "+ url);
-//   http.get({
-//     url: url,
-//     progress: function (current, total) {
-//       console.log('downloaded %d bytes from %d', current, total);
-//     }
-//     }, paths.archivedSites, function (err, res) {
-//       if (err) {
-//         console.error(err);
-//       return;
-//     }
-//     // console.log(res.code, res.headers, res.file);
-// });
-
-//   http.get(url, path.archivedSites, function(err){
-//     if(err) {console.log("erro fetching site");}
-//   });
 };
 
+var getWebsite = function(url, filePath){
+  http.get(url, filePath, function(err){
+    if(err) {console.log("error fetching site");}
+  });
+};
